@@ -21,13 +21,14 @@ public class SpringBootTestApplication implements ApplicationListener<SuccessEve
         ConfigurableApplicationContext context = SpringApplication.run(SpringBootTestApplication.class, args);
 
         NewNumberEventPublisher publisher = context.getBean(NewNumberEventPublisher.class);
+        MessageUtils messages = context.getBean(MessageUtils.class);
 
         Scanner in = new Scanner(System.in);
         Random random = new Random();
         int goal = random.nextInt(1000);
-        System.out.println(context.getMessage("hello", null, Locale.getDefault()));
+        System.out.println(messages.getMessage("hello"));
         do {
-            System.out.println(context.getMessage("turn", null, Locale.getDefault()));
+            System.out.println(messages.getMessage("turn"));
             int num = in.nextInt();
             publisher.publishEvent(goal, num);
         } while (!success);
@@ -36,7 +37,8 @@ public class SpringBootTestApplication implements ApplicationListener<SuccessEve
     @Override
     public void onApplicationEvent(SuccessEvent event) {
         ApplicationContext context = event.getContext();
-        System.out.println(context.getMessage("success", new Object[]{event.getNumber()}, Locale.getDefault()));
+        MessageUtils messages = context.getBean(MessageUtils.class);
+        System.out.println(messages.getMessage("success", new Object[]{event.getNumber()}));
         success = true;
     }
 }
